@@ -1,6 +1,10 @@
 # Python-Developer-Roadmap
 Complete roadmap along with notes to become a Python Developer
 
+Credits - Roadmap framework from the [Propeers Python Developer Roadmap](https://www.propeers.in/roadmaps/6614a0932dc5903d99ab903c)
+
+Notes generated using ChatGPT
+
 # Table of Contents
 - [Python-Developer-Roadmap](#python-developer-roadmap)
 - [Python Basics](#python-basics)
