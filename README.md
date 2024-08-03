@@ -698,9 +698,9 @@ Notes generated using ChatGPT
 - **Operator Precedence** defines the order in which operators are evaluated in expressions.
 - Operators with higher precedence are evaluated before operators with lower precedence.
 - Example of precedence (from highest to lowest):
-    1. `*` (Exponentiation)
-    2. ``, `/`, `//`, `%` (Multiplication, Division, Floor Division, Modulus)
-    3. `+`, `` (Addition, Subtraction)
+    1. `**` (Exponentiation)
+    2. `*`, `/`, `//`, `%` (Multiplication, Division, Floor Division, Modulus)
+    3. `+`, `-` (Addition, Subtraction)
     4. `==`, `!=`, `>`, `<`, `>=`, `<=` (Comparison Operators)
     5. `not` (Logical NOT)
     6. `and` (Logical AND)
