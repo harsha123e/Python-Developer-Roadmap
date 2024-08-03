@@ -462,6 +462,7 @@ Notes generated using ChatGPT
     ```python
     import keyword
     print(keyword.kwlist)
+    #output - ['False', 'None', 'True', 'and', 'as', 'assert', 'async', 'await', 'break', 'class', 'continue', 'def', 'del', 'elif', 'else', 'except', 'finally', 'for', 'from', 'global', 'if', 'import', 'in', 'is', 'lambda', 'nonlocal', 'not', 'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield']
     ```
     
 
@@ -639,8 +640,9 @@ Notes generated using ChatGPT
     ```python
     x = 10        # int
     y = 10.5      # float
-    z = x + y     # y is implicitly converted to float
-    
+    z = x + y     # x is implicitly converted to float
+    print(z)
+    #output: 20.5
     ```
     
 - **Type Casting**: Explicitly converting one data type to another using built-in functions.
@@ -851,8 +853,9 @@ Notes generated using ChatGPT
 - Example using dictionary:
     
     ```python
+    import math
+
     def circle_area(r):
-        import math
         return math.pi * r * r
     
     def rectangle_area(l, b):
@@ -863,10 +866,15 @@ Notes generated using ChatGPT
         2: lambda l, b: rectangle_area(l, b)
     }
     
-    choice = 1  # Example choice
-    if choice in switch_case:
-        result = switch_case   # Example radius for circle
+    choice = 2  # Example choice for rectangle
+    args = (5, 3)  # Example arguments for rectangle (length and breadth)
     
+    if choice in switch_case:
+        result = switch_case[choice](*args)  # Unpacks args and passes them to the lambda function
+        print(f"The result is: {result}")
+    else:
+        print("Invalid choice")
+
     ```
     
 
@@ -879,17 +887,18 @@ Notes generated using ChatGPT
         for i in range(10):
             if i == 5:
                 break
-        
+            print(i, end=" ")
+        #output: 0 1 2 3 4
         ```
         
     - **`continue`**: Skips the rest of the code inside the loop for the current iteration and proceeds to the next iteration.
         
         ```python
-        for i in range(10):
-            if i == 5:
+        for i in range(5):
+            if i == 2:
                 continue
-            print(i)
-        
+            print(i, end=" ")
+        #output: 0 1 3 4
         ```
         
     - **`pass`**: A placeholder that does nothing. Used when a statement is syntactically required but you do not want to execute any code.
@@ -1035,6 +1044,7 @@ Loops are used to execute a block of code repeatedly. There are two primary type
 ### For Loop
 
 - Iterates over a sequence (list, tuple, string) or a range of numbers.
+- Range Function: range(n) generates a sequence of numbers starting from 0 up to n-1.
     
     ```python
     for num in range(5):
@@ -1058,6 +1068,7 @@ Loops are used to execute a block of code repeatedly. There are two primary type
 ### Iterators and Generators
 
 - **Iterators**: Objects that implement `__iter__()` and `__next__()` methods.
+- Common Iterators: List Iterator, Tuple Iterator, String Iterator, Dictionary Iterator, File Iterator, Custom Iterator
     
     ```python
     nums = [1, 2, 3]
@@ -1146,21 +1157,44 @@ Loops are used to execute a block of code repeatedly. There are two primary type
         
     
     ```python
-    N = int(input("Enter number of rows: "))
-    num = 1
-    for i in range(N):
-        if i < N//2:
-            for j in range(N):
-                print(num, end=' ')
-                num += 1
-            print()
-        else:
-            num -= N
-            for j in range(N):
-                print(num, end=' ')
-                num += 1
-            num -= N - 1
-            print()
+
+    def printPattern(n):
+        result = [""] * n
+    
+        top = 0
+        bottom = n - 1
+        curr = 1
+    
+        while top <= bottom:
+            str1 = ""
+            str2 = ""
+    
+            for _ in range(n):
+                str1 += str(curr) + " "
+                curr += 1
+    
+            result[top] = str1.strip()  # Remove trailing spaces
+    
+            if top == bottom:
+                break
+    
+            for _ in range(n):
+                str2 += str(curr) + " "
+                curr += 1
+    
+            result[bottom] = str2.strip()  # Remove trailing spaces
+    
+            top += 1
+            bottom -= 1
+    
+        return result
+
+    # Generate the pattern
+    pattern = printPattern(5)
+    
+    # Print each line of the pattern
+    for line in pattern:
+        print(line)
     
     ```
     
@@ -1254,22 +1288,30 @@ Functions can accept arguments, which are values passed into the function.
     ```
     
 - **Variable-Length Arguments**:
-    - **`args`**: For non-keyword variable arguments.
+    - **`*args`**: For non-keyword variable arguments.
         
         ```python
         def print_numbers(*args):
             for number in args:
                 print(number)
-        
+        num_list = [1,2]
+        num_set = {1,2}
+        print_numbers(1,*num_list, *num_set, 3)
         ```
         
-    - **`*kwargs`**: For keyword variable arguments.
+    - **`**kwargs`**: For keyword variable arguments.
         
         ```python
         def print_info(**kwargs):
             for key, value in kwargs.items():
                 print(f"{key}: {value}")
         
+        # Define dictionaries with keyword arguments
+        info_dict = {'age': 25, 'city': 'New York'}
+        additional_info = {'job': 'Engineer', 'country': 'USA'}
+        
+        # Call the function with a mix of keyword arguments
+        print_info(name='John', **info_dict, **additional_info, email='john@example.com')
         ```
         
 
@@ -1374,6 +1416,36 @@ Decorators are functions that modify the behavior of another function. They are 
     say_hello()
     
     ```
+  
+- **Advanced Example**:
+    
+    ```python
+    import time
+
+    def logging_decorator(message):
+        def decorator(func):
+            def wrapper(*args, **kwargs):
+                print(f"{message}: Calling {func.__name__} with arguments {args} and keyword arguments {kwargs}")
+                start_time = time.time()  # Record start time
+                result = func(*args, **kwargs)  # Call the original function with arguments
+                end_time = time.time()  # Record end time
+                duration = end_time - start_time  # Calculate duration
+                print(f"{func.__name__} returned {result}")
+                print(f"{func.__name__} took {duration:.4f} seconds to execute.")
+                return result
+            return wrapper
+        return decorator
+    
+    @logging_decorator("Info")
+    def multiply(x, y):
+        """Multiplies two numbers."""
+        time.sleep(1)  # Simulate a delay
+        return x * y
+    
+    # Call the decorated function
+    print(multiply(5, 3))
+
+    ```
     
 
 ### Recursion
@@ -1388,7 +1460,7 @@ Recursion occurs when a function calls itself to solve a smaller instance of the
             return 1
         else:
             return n * factorial(n - 1)
-    
+    print(factorial(5)) #output: 120
     ```
     
 
@@ -1412,7 +1484,8 @@ Recursion occurs when a function calls itself to solve a smaller instance of the
     def print_star_pattern(N):
         for i in range(N):
             stars = '*' * (2 * i + 1)
-            print(stars.center(2 * N - 1))
+            spaces = ' ' * (N - i - 1)
+            print(spaces + stars)
     
     N = int(input("Enter the number of lines: "))
     print_star_pattern(N)
@@ -1446,7 +1519,18 @@ Recursion occurs when a function calls itself to solve a smaller instance of the
     results = [is_palindrome(ex) for ex in examples]
     print(results)  # Output: ['Yes', 'No', 'Yes', 'Yes', 'No']
     ```
-    
+
+    - r'[^a-zA-Z0-9]': This is a regex pattern.
+        - `[^...]`: The ^ inside the square brackets [] negates the character set. It means "match any character that is NOT in the specified set."
+        - a-zA-Z0-9: This specifies the set of characters to include in the match. Specifically, it includes:
+        - a-z: All lowercase letters
+        - A-Z: All uppercase letters
+        - 0-9: All digits
+        - re.sub(...): This function replaces all occurrences of the pattern with an empty string ''.
+        
+        - r'[^a-zA-Z0-9]': Matches any character that is not a letter or digit.
+        - '': The replacement string (in this case, it's an empty string, so the matched characters are removed).
+        - .lower(): Converts the resulting string to lowercase.
 
 # Python Intermediate
 
@@ -1678,32 +1762,44 @@ Sets are collections of unique, unordered elements. They are useful for operatio
     ```
     
 - **Operations**:
-    - **Union**:
+    - **Union**: Combines all unique elements from both sets. The result includes every element that is in either set1 or set2 (or both).
         
         ```python
-        set1 | set2
+        set1 = {1, 2, 3}
+        set2 = {3, 4, 5}
+        union_set = set1 | set2
+        print(union_set)  # Output: {1, 2, 3, 4, 5}
         
         ```
         
-    - **Intersection**:
+    - **Intersection**: Includes only the elements that are present in both sets. It finds the common elements between set1 and set2.
         
         ```python
-        set1 & set2
+        set1 = {1, 2, 3}
+        set2 = {3, 4, 5}
+        intersection_set = set1 & set2
+        print(intersection_set)  # Output: {3}
         
         ```
         
-    - **Difference**:
+    - **Difference**: Includes elements that are in set1 but not in set2. It subtracts the elements of set2 from set1.
         
         ```python
-        set1 - set2
-        
+        set1 = {1, 2, 3}
+        set2 = {3, 4, 5}
+        difference_set = set1 - set2
+        print(difference_set)  # Output: {1, 2}
+
         ```
         
-    - **Symmetric Difference**:
+    - **Symmetric Difference**: Includes elements that are in either set1 or set2, but not in both. It finds elements that are in one set or the other, but not in both.
         
         ```python
-        set1 ^ set2
-        
+        set1 = {1, 2, 3}
+        set2 = {3, 4, 5}
+        symmetric_difference_set = set1 ^ set2
+        print(symmetric_difference_set)  # Output: {1, 2, 4, 5}
+   
         ```
         
 - **Adding and Removing Elements**:
